@@ -3,8 +3,8 @@
 //  swift-Network_Reachability
 /*
  ********************************************************************* */
- //文章转自
- // http://mp.weixin.qq.com/s?__biz=MjM5OTM0MzIwMQ==&mid=2652547965&idx=1&sn=887b834ea194862a45b3e643f09f4254&chksm=bcd2ee738ba56765ecc4f429644cd6a2686a7c3172e6ba30da11fdde5b8cede72c9ec8157dea&mpshare=1&scene=1&srcid=1207yuUxoVJ5ixeCUw2DTAD9#rd.
+ //代码参考自
+ //http://www.cocoachina.com/swift/20161124/18129.html
 
 import Foundation
 import SystemConfiguration
@@ -21,6 +21,10 @@ class Reachablity: NSObject {
     
     // 在这个类中添加一个属性来保存SCNetworkReachability对象：
     private var networkReachability: SCNetworkReachability?
+    
+    //现在我们需要定定义一个开启通知和一个关闭通知方法，并定义一个属性来标识通知状态当前处于开启状态还是关闭状态：
+    private var notifying: Bool = false
+    
     
     /*
      为了监控目前服务器是否可以连接，我们创建一个初始化方法,把域名为作参数传入，并通过SCNetworkReachabilityCreateWithName 函数初始化 SCNetworkReachability对象 。如果SCNetworkReachability初始化失败则返回nil，所以我们创建一个可失败初始化方法(failable initializer):
@@ -71,6 +75,32 @@ class Reachablity: NSObject {
         localWifiAddress.sin_addr.s_addr = 0xA9FE0000
         
         return Reachablity(hostAddress: localWifiAddress)
+    }
+    
+    // 定义一个开启通知和一个关闭通知方法
+    func startNotifier() -> Bool {
+        
+        //开启通知之前，先检查通知是否为开启状态。
+        guard notifying == false else {
+            return false
+        }
+        
+        var context = SCNetworkReachabilityContext()
+        context.info = UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
+        let callOut: SCNetworkReachabilityCallBack = { (target: SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) in
+            if let currentInfo = info {
+                let infoObject = Unmanaged<AnyObject>.fromOpaque(currentInfo).takeUnretainedValue()
+                if infoObject is Reachablity {
+                    let networkReachability = infoObject as! Reachablity
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: infoObject.kReachabilityDidChangeNotificationName), object: networkReachability)
+                }
+            }
+        }
+        guard let reachability = networkReachability, SCNetworkReachabilitySetCallback(reachability,callOut, &context) == false else {
+            return true
+        }
+        notifying = true
+        return notifying
     }
 
 
