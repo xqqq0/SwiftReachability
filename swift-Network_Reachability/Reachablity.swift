@@ -8,10 +8,10 @@
 
 import Foundation
 import SystemConfiguration
-
+let kReachabilityDidChangeNotificationName = "ReachabilityDidChangeNotification"
 class Reachablity: NSObject {
     // 网络变化时发出通知的key值
-    let kReachabilityDidChangeNotificationName = "ReachabilityDidChangeNotification"
+    
     
     enum ReachabilityStatus {
         case notReachable
@@ -124,7 +124,7 @@ class Reachablity: NSObject {
                 let infoObject = Unmanaged<AnyObject>.fromOpaque(currentInfo).takeUnretainedValue()
                 if infoObject is Reachablity {
                     let networkReachability = infoObject as! Reachablity
-                    NotificationCenter.default.post(name: Notification.Name(rawValue: infoObject.kReachabilityDidChangeNotificationName), object: networkReachability)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: kReachabilityDidChangeNotificationName), object: networkReachability)
                 }
             }
         }
