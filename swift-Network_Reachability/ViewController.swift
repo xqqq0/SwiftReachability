@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var flagLabel: UILabel!
     
-    var reachability: Reachablity? = Reachablity.networkReachabilityForInternetConnection()
+    var reachability: Reachability? = Reachability.networkReachabilityForInternetConnection()
     
     // 我们在一个视图控制器viewDidLoad()方法中增加一个观察者来进行reachability通知
     override func viewDidLoad() {
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
         checkReachability()
     }
     //当然，你可以使用域名地址调用相应的构造器，如下所示：
-    var reachability1 = Reachablity(hostName: "www.apple.com")
+    var reachability1 = Reachability(hostName: "www.apple.com")
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         navigationController?.present(UIViewController(), animated: true, completion: nil)

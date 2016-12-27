@@ -1,5 +1,5 @@
 //
-//  Reachablity.swift
+//  Reachaiblity.swift
 //  swift-Network_Reachability
 /*
  ********************************************************************* */
@@ -10,10 +10,9 @@ let kReachabilityDidChangeNotificationName = "ReachabilityDidChangeNotification"
 
 import Foundation
 import SystemConfiguration
-class Reachablity: NSObject {
+class Reachability: NSObject {
+    
     // 网络变化时发出通知的key值
-    
-    
     enum ReachabilityStatus {
         case notReachable
         case reachableViaWiFi
@@ -92,22 +91,22 @@ class Reachablity: NSObject {
     }
     
     // 类方法初始化 Reachablity 类
-    static func networkReachabilityForInternetConnection() -> Reachablity? {
+    static func networkReachabilityForInternetConnection() -> Reachability? {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
         zeroAddress.sin_family = sa_family_t(AF_INET)
-        return Reachablity(hostAddress: zeroAddress)
+        return Reachability(hostAddress: zeroAddress)
     }
     
     // 用来检测当我们是否连接的是本地wifi
-    static func networkReachabilityForLocalWiFi() -> Reachablity? {
+    static func networkReachabilityForLocalWiFi() -> Reachability? {
         var localWifiAddress = sockaddr_in()
         localWifiAddress.sin_len = UInt8(MemoryLayout.size(ofValue: localWifiAddress))
         localWifiAddress.sin_family = sa_family_t(AF_INET)
         // IN_LINKLOCALNETNUM is defined inas 169.254.0.0 (0xA9FE0000).
         localWifiAddress.sin_addr.s_addr = 0xA9FE0000
         
-        return Reachablity(hostAddress: localWifiAddress)
+        return Reachability(hostAddress: localWifiAddress)
     }
     
     // 定义一个开启通知和一个关闭通知方法
@@ -123,8 +122,8 @@ class Reachablity: NSObject {
         let callOut: SCNetworkReachabilityCallBack = { (target: SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) in
             if let currentInfo = info {
                 let infoObject = Unmanaged<AnyObject>.fromOpaque(currentInfo).takeUnretainedValue()
-                if infoObject is Reachablity {
-                    let networkReachability = infoObject as! Reachablity
+                if infoObject is Reachability {
+                    let networkReachability = infoObject as! Reachability
                     NotificationCenter.default.post(name: Notification.Name(rawValue: kReachabilityDidChangeNotificationName), object: networkReachability)
                 }
             }
