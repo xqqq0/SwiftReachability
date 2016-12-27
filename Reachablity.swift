@@ -25,7 +25,6 @@ class Reachablity: NSObject {
     //现在我们需要定定义一个开启通知和一个关闭通知方法，并定义一个属性来标识通知状态当前处于开启状态还是关闭状态：
     private var notifying: Bool = false
     
-    
     /*
      为了监控目前服务器是否可以连接，我们创建一个初始化方法,把域名为作参数传入，并通过SCNetworkReachabilityCreateWithName 函数初始化 SCNetworkReachability对象 。如果SCNetworkReachability初始化失败则返回nil，所以我们创建一个可失败初始化方法(failable initializer):
      */
@@ -102,7 +101,18 @@ class Reachablity: NSObject {
         notifying = true
         return notifying
     }
-
+    
+    // 停止通知，我们只需要把network reachability的引用管理从run loop中移除就可以了：
+    func stopNotifier() {
+        if let reachability = networkReachability, notifying == true {
+            SCNetworkReachabilityUnscheduleFromRunLoop(reachability, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode as! CFString)
+            notifying = false
+        }
+    }
+    //在Reachability 销毁之前确保关闭通知已经关闭：
+    deinit {
+        stopNotifier()
+    }
 
     
 }
