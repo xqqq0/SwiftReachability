@@ -25,6 +25,39 @@ class Reachablity: NSObject {
     //现在我们需要定定义一个开启通知和一个关闭通知方法，并定义一个属性来标识通知状态当前处于开启状态还是关闭状态：
     private var notifying: Bool = false
     
+    // 我创建了一个根据flags传递的值返回网络状态的函数（在方法的注释中解释了flags值所代表的链接状态）：
+    var currentReachabilityStatus: ReachabilityStatus {
+        if flags.contains(.reachable) == false {
+            // The target host is not reachable.
+            return .notReachable
+        }
+        else if flags.contains(.isWWAN) == true {
+            // WWAN connections are OK if the calling application is using the CFNetwork APIs.
+            return .reachableViaWWAN
+        }
+        else if flags.contains(.connectionRequired) == false {
+            // If the target host is reachable and no connection is required then we'll assume that you're on Wi-Fi...
+            return .reachableViaWiFi
+        }
+        else if (flags.contains(.connectionOnDemand) == true || flags.contains(.connectionOnTraffic) == true) && flags.contains(.interventionRequired) == false {
+            // The connection is on-demand (or on-traffic) if the calling application is using the CFSocketStream or higher APIs and no [user] intervention is needed
+            return .reachableViaWiFi
+        }
+        else {
+            return .notReachable
+        }
+    }
+    
+    // 最后，我们创造一个函数决定当前的网络连接状态，最终通过一个bool变量检查是否连接：
+    var isReachable: Bool {
+        switch currentReachabilityStatus {
+        case .notReachable:
+            return false
+        case .reachableViaWiFi, .reachableViaWWAN:
+            return true
+        }
+    }
+    
     /*
      为了监控目前服务器是否可以连接，我们创建一个初始化方法,把域名为作参数传入，并通过SCNetworkReachabilityCreateWithName 函数初始化 SCNetworkReachability对象 。如果SCNetworkReachability初始化失败则返回nil，所以我们创建一个可失败初始化方法(failable initializer):
      */
@@ -122,31 +155,6 @@ class Reachablity: NSObject {
             return []
         }
     }
-    
-    // 我创建了一个根据flags传递的值返回网络状态的函数（在方法的注释中解释了flags值所代表的链接状态）：
-    var currentReachabilityStatus: ReachabilityStatus {
-        if flags.contains(.reachable) == false {
-            // The target host is not reachable.
-            return .notReachable
-        }
-        else if flags.contains(.isWWAN) == true {
-            // WWAN connections are OK if the calling application is using the CFNetwork APIs.
-            return .reachableViaWWAN
-        }
-        else if flags.contains(.connectionRequired) == false {
-            // If the target host is reachable and no connection is required then we'll assume that you're on Wi-Fi...
-            return .reachableViaWiFi
-        }
-        else if (flags.contains(.connectionOnDemand) == true || flags.contains(.connectionOnTraffic) == true) && flags.contains(.interventionRequired) == false {
-            // The connection is on-demand (or on-traffic) if the calling application is using the CFSocketStream or higher APIs and no [user] intervention is needed
-            return .reachableViaWiFi
-        } 
-        else {
-            return .notReachable
-        }
-    }
-    
-    
     
     //在Reachability 销毁之前确保关闭通知已经关闭：
     deinit {
