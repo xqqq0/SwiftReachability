@@ -196,6 +196,7 @@
 				TargetAttributes = {
 					9993BD631DF8F5C200B7B106 = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 2ZX4W9M4RE;
 						ProvisioningStyle = Automatic;
 					};
 					9993BD771DF8F5C200B7B106 = {
@@ -416,6 +417,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2ZX4W9M4RE;
 				INFOPLIST_FILE = "swift-Network_Reachability/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "QXH.swift-Network-Reachability";
@@ -428,6 +430,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2ZX4W9M4RE;
 				INFOPLIST_FILE = "swift-Network_Reachability/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "QXH.swift-Network-Reachability";

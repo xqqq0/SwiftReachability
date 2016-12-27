@@ -6,9 +6,10 @@
  //代码参考自
  //http://www.cocoachina.com/swift/20161124/18129.html
 
+let kReachabilityDidChangeNotificationName = "ReachabilityDidChangeNotification"
+
 import Foundation
 import SystemConfiguration
-let kReachabilityDidChangeNotificationName = "ReachabilityDidChangeNotification"
 class Reachablity: NSObject {
     // 网络变化时发出通知的key值
     
