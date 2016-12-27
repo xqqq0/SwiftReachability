@@ -109,6 +109,21 @@ class Reachablity: NSObject {
             notifying = false
         }
     }
+    
+//    为了获取网络连接状态，我们定义一个flags属性来获取 SCNetworkReachability对象：
+    private var flags: SCNetworkReachabilityFlags {
+        
+        var flags = SCNetworkReachabilityFlags(rawValue: 0)
+        
+        if let reachability = networkReachability, withUnsafeMutablePointer(to: &flags, { SCNetworkReachabilityGetFlags(reachability, UnsafeMutablePointer($0)) }) == true {
+            return flags
+        }
+        else {
+            return []
+        }
+    }
+    
+    
     //在Reachability 销毁之前确保关闭通知已经关闭：
     deinit {
         stopNotifier()
